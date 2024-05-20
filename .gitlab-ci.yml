@@ -1,0 +1,14 @@
+deploy:
+  image: debian:bullseye
+  stage: deploy
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - chmod 700 ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    - ssh root@188.166.190.248  'sudo -u www-data git -C /var/www/html/ppdbsmaperintis2 stash'
+    - ssh root@188.166.190.248  'sudo -u www-data git -C /var/www/html/ppdbsmaperintis2 pull'
+#    - ssh root@167.99.66.75  'chmod 755 /usr/share/docker/www/html/jebepos-backend -R'
+#    - ssh root@167.99.66.75  'chmod 777 /usr/share/docker/www/html/jebepos-backend/storage -R'

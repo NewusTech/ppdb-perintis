@@ -1,0 +1,10 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/assets/css/app.css": "/assets/css/app.css",
+    "/css/app.css": "/css/app.css",
+    "/assets/css/icons.css": "/assets/css/icons.css",
+    "/assets/css/bootstrap.css": "/assets/css/bootstrap.css",
+    "/assets/css/app.min.css": "/assets/css/app.min.css",
+    "/assets/css/bootstrap.min.css": "/assets/css/bootstrap.min.css",
+    "/assets/css/icons.min.css": "/assets/css/icons.min.css"
+}
