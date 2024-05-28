@@ -94,7 +94,7 @@ class BerkasController extends Controller
 
         if ($pendaftar->pernyataan_siswa_baru == null) {
             abort(404);
-        } elseif ($this->checkPermission($id)) {
+        } else {
             $path = storage_path('app/' . $pendaftar->pernyataan_siswa_baru);
             return response()->file($path);
         }
