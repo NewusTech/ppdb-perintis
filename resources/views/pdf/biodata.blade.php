@@ -43,7 +43,7 @@
                 </td>
                 <td rowspan="2" style="vertical-align: top;" class="text-right">
                     @if ($pendaftar->foto)
-                        <img src="{{ public_path('storage/' . $pendaftar->foto) }}" alt=""
+                        <img src="{{ asset('storage/' . $pendaftar->foto) }}" alt=""
                             class="border border-dark p-1" style="width: 105px; height: 144px; margin-left:10px">
                     @else
                         <img src="{{ public_path('assets/images/3x4.png') }}" alt=""

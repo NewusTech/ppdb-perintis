@@ -120,6 +120,9 @@
                                             <button class="btn btn-info btn-sm" type="button" data-toggle="modal" data-target="#modalTambah"><i class="fa fa-plus"></i></button>
                                             @endif
                                         </td>
+                                        <td>
+                                            Aksi
+                                        </td>
                                         <td>Tanggal/Tipe</td>
                                         <td>Uang Pangkal</td>
                                         <td>Uang SPP(bulan)</td>
@@ -139,6 +142,12 @@
                                             <a href="{{ url('download-kwitansi',[ $pendaftar->id, $v['id']]) }}" target="_blank">
                                                 <i class="fa fa-download" role="button"></i>
                                             </a>
+                                        </td>
+                                        <td>
+                                            <a href="#" data-toggle="modal" data-target="#modalEditKwitansi-{{ $v['id'] }}"><i class="fa fa-edit"></i></button>
+                                            {{-- <a href="#" data-toggle="modal" data-target="#modalEditKwitansi" data-id="{{ $v['id'] }}" data-date="{{ $v['date'] }}" data-pilihan="{{ $v['pilihan_pembayaran'] }}" data-uang-pangkal="{{ $v['uang_pangkal'] }}" data-uang-spp="{{ $v['uang_spp'] }}" data-kaos-olahraga="{{ $v['kaos_olahraga'] }}" data-bed="{{ $v['bed_lokasi_dll'] }}" data-baju="{{ $v['baju_seragam'] }}">
+                                                <i class="fa fa-edit"></i>
+                                            </a> --}}
                                         </td>
                                         <td>{{ $v['date'] }}/{{$v['pilihan_pembayaran']}}</td>
                                         <td>Rp.{{ number_format($v['uang_pangkal'], 0, ',', '.') }},-</td>
@@ -349,6 +358,106 @@
                         </div>
                     </div>
                 </form>
+                @foreach($biaya_daftar_ulang_id as $k => $v)
+                <div wire:ignore.self class="modal fade" id="modalEditKwitansi-{{ $v['id'] }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="modalAddLabels" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Kwitansi</h5>
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <form wire:submit.prevent="updateKwitansi({{ $pendaftar->id }})">
+                                <div class="modal-body">
+                                    @if (session('success'))
+                                        <div class="alert alert-success alert-dismissible fade show"
+                                            role="alert">
+                                            <strong>
+                                                <i class="mr-2 mdi mdi-check-all"></i>
+                                                Berhasil
+                                            </strong>
+                                            {{ session('success') }}
+                                            <button wire:click="cleanForm" type="button" class="close"
+                                                data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    @endif
+
+                                    @if (session('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show"
+                                            role="alert">
+                                            <i class="mr-2 mdi mdi-block-helper"></i>
+                                            {{ session('error') }}
+                                            <button type="button" class="close" data-dismiss="alert"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                    <div class="form-group">
+                                        <label>Uang Pangkal</label>
+                                        <input type="text" class="form-control" wire:model="uang_pangkal_edit" id="uang_pangkal_edit"
+                                            placeholder="Uang Pangkal">
+                                        @error('uang_pangkal_edit')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Uang SPP</label>
+                                        <input type="text" class="form-control" wire:model="uang_spp_edit" id="uang_spp_edit"
+                                            placeholder="Uang SPP">
+                                        @error('uang_spp_edit')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kaos Olahraga</label>
+                                        <input type="text" class="form-control" wire:model="kaos_olahraga_edit" id="kaos_olahraga_edit"
+                                            placeholder="Kaos Olahraga">
+                                        @error('kaos_olahraga_edit')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Bed, Lokasi, Topi dan Dasi</label>
+                                        <input type="text" class="form-control" wire:model="bed_lokasi_dll_edit" id="bed_lokasi_dll_edit"
+                                            placeholder="Bed Lokasi Dll">
+                                        @error('bed_lokasi_dll_edit')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Baju Seragam</label>
+                                        <input type="text" class="form-control" wire:model="baju_seragam_edit" id="baju_seragam_edit"
+                                            placeholder="Baju Seragam">
+                                        @error('baju_seragam_edit')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Biaya Pendaftaran</label>
+                                        <input type="text" class="form-control" wire:model="biaya_pendaftaran"
+                                            placeholder="Biaya Pendaftaran">
+                                        @error('biaya_pendaftaran')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button wire:click="cleanForm" type="button"
+                                        class="btn btn-light waves-effect" data-dismiss="modal">Tutup</button>
+                                    <button type="submit"
+                                        class="btn btn-primary waves-effect waves-light">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -356,5 +465,34 @@
 
 
 @push('scripts')
-
+    <script>
+        document.addEventListener('livewire:load', function () {
+            Livewire.on('closeModal', function () {
+                $('#modalEditKwitansi').modal('hide');
+                location.reload();
+            });
+        });
+        // $('#modalEditKwitansi').on('show.bs.modal', function (event) {
+        //     var button = $(event.relatedTarget);
+        //     var id = button.data('id');
+        //     console.log("cehck", id)
+        //     var date = button.data('date');
+        //     var pilihan = button.data('pilihan');
+        //     var uangPangkal = button.data('uang-pangkal');
+        //     var uangSpp = button.data('uang-spp');
+        //     var kaosOlahraga = button.data('kaos-olahraga');
+        //     var bed = button.data('bed');
+        //     var baju = button.data('baju');
+        //     console.log("baju", baju)
+        //     var modal = $(this);
+        //     modal.find('.modal-body #id').val(id);
+        //     modal.find('.modal-body #date').val(date);
+        //     modal.find('.modal-body #pilihan_pembayaran').val(pilihan);
+        //     modal.find('.modal-body #uang_pangkal_edit').val(uangPangkal);
+        //     modal.find('.modal-body #uang_spp_edit').val(uangSpp);
+        //     modal.find('.modal-body #kaos_olahraga_edit').val(kaosOlahraga);
+        //     modal.find('.modal-body #bed_lokasi_dll_edit').val(bed);
+        //     modal.find('.modal-body #baju_seragam_edit').val(baju);
+        // });
+    </script>
 @endpush

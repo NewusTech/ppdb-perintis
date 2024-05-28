@@ -177,17 +177,17 @@
         diketaui oleh kedua orang tua / wali saya.
     </p>
 
-    <table class="w-100 mt-5">
+	<table class="w-100 mt-5">
         <tr>
-            <td style="width: 60%"></td>
+            <td style="width: 50%"></td>
             <td>Bandar Lampung, {{ \Carbon\Carbon::now()->isoFormat(' D MMMM Y') }}</td>
         </tr>
         <tr>
-            <td>Mengatahui</td>
+            <td style="width: 50%">Mengatahui</td>
             <td>Yang Membuat Pernyataan</td>
         </tr>
         <tr>
-            <td>Orang Tua / Wali</td>
+            <td style="width: 50%">Orang Tua / Wali</td>
             <td>Siswa,</td>
         </tr>
         <tr>
@@ -211,7 +211,7 @@
             <td><br /></td>
         </tr>
         <tr>
-            <td>{{ $pendaftar->nama_ayah .' / ' .$pendaftar->nama_ibu .($pendaftar->nama_wali ? ' / ' . $pendaftar->nama_wali : '') }}
+            <td style="width: 50%">{{ $pendaftar->nama_ayah .' / ' .$pendaftar->nama_ibu .($pendaftar->nama_wali ? ' / ' . $pendaftar->nama_wali : '') }}
             </td>
             <td>{{ $pendaftar->user->name }}</td>
         </tr>
@@ -240,6 +240,7 @@
             {!! $tata_tertib !!}
         </div>
     </div>
+	<div class="page-break"></div>
 </body>
 
 </html>
