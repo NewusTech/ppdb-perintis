@@ -3,14 +3,23 @@
 namespace App\Http\Livewire\Pages;
 
 use App\Models\Pendaftaran;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
     public $executive;
+    public $tahunSelected;
+    public $tahun;
 
-    public function mount()
+    public function mount(Request $request)
     {
+        $validatedData = $request->validate([
+            'tahun' => 'integer',
+        ]);
+        $tahun = $request->tahun ?? Carbon::now()->year;
+
         if (auth()->user()->roles->first()->name == 'siswa') {
             $pendaftaran = Pendaftaran::where('user_id', auth()->id())->orderBy('created_at', 'desc')->first();
             session()->flash('success', 'Selamat datang di halaman dashboard, ' . $pendaftaran->user->name);
@@ -28,8 +37,17 @@ class Dashboard extends Component
                 session()->flash('status', 'Anda belum lolos verifikasi');
             }
         } else {
-            $pendaftar = Pendaftaran::with('user', 'kelas')->get();
-            $this->pendaftar = $pendaftar;
+            if ($tahun) {
+                $pendaftar = Pendaftaran::with('user', 'kelas')->whereYear('created_at', $tahun)->get();
+                $this->tahunSelected = $tahun;
+            } else {
+                $pendaftar = Pendaftaran::with('user', 'kelas')->whereYear('created_at', $tahun)->get();
+            }
+
+            $this->tahun = Pendaftaran::with('user', 'kelas')->get()->pluck('created_at')->map(function ($date) {
+                return Carbon::parse($date)->year;
+            })->unique()->values()->all();
+
             $this->executive = $pendaftar->where('kelas_id', 1)->where('status_daftar_ulang', 1)->count();
             $this->reguler_ac = $pendaftar->where('kelas_id', 2)->where('status_daftar_ulang', 1)->count();
             $this->non_ac = $pendaftar->where('kelas_id', 3)->where('status_daftar_ulang', 1)->count();
@@ -45,7 +63,7 @@ class Dashboard extends Component
 
     public function refresh()
     {
-        $this->mount();
+        $this->mount(request()->merge(['tahun' => request('tahun')]));
     }
 
     public function render()

@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Tables;
 
 use App\Exports\Laporan;
 use App\Models\Pendaftaran;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Facades\Excel;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
@@ -16,6 +17,7 @@ class LaporanTable extends DataTableComponent
     public $keterangan;
     public string $defaultSortColumn = 'created_at';
     public string $defaultSortDirection = 'desc';
+
 
     // public array $filterNames = [
     //     'jenis_kelamin' => 'Jenis Kelamin',
@@ -59,15 +61,12 @@ class LaporanTable extends DataTableComponent
                     2 => 'Belum',
                     1 => 'Sudah',
                 ]),
-            'from_date' => Filter::make('Dari Tanggal')
-                ->date([
-                    'max' => now()->format('Y-m-d'),
-                ]),
-            'to_date' => Filter::make('Sampai Tanggal')
-                ->date([
-                    'min' => isset($this->filters['from_date']) && $this->filters['from_date'] ? $this->filters['from_date'] : '',
-                    'max' => now()->format('Y-m-d'),
-                ])
+            'tahun_masuk' => Filter::make('Tahun')->select([
+                '' => 'Semua',
+                '2024' => '2024',
+                '2023' => '2023',
+                '2022' => '2022',
+            ]),
         ];
     }
 
@@ -146,9 +145,7 @@ class LaporanTable extends DataTableComponent
                 }
             })
             ->when($this->getFilter('kelas_id'), fn ($query, $kelas_id) => $query->whereIn('kelas_id', $kelas_id))
-            ->when($this->getFilter('from_date'), fn ($query, $created_at) => $query->whereDate('pendaftaran.created_at', '>=', $created_at))
-            ->when($this->getFilter('to_date'), fn ($query, $created_at) => $query->whereDate('pendaftaran.created_at', '<=', $created_at));
-
+            ->when($this->getFilter('tahun_masuk'), fn ($query, $created_at) => $query->whereYear('pendaftaran.created_at', $created_at));
         return $a;
     }
 
