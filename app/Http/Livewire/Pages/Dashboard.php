@@ -18,7 +18,11 @@ class Dashboard extends Component
         $validatedData = $request->validate([
             'tahun' => 'integer',
         ]);
-        $tahun = $request->tahun ?? Carbon::now()->year;
+        $tahunFilter = $request->tahun;
+
+        $this->tahun = Pendaftaran::with('user', 'kelas')->where('status_daftar_ulang', 1)->orderByDesc('created_at')->get()->pluck('created_at')->map(function ($date) {
+            return Carbon::parse($date)->year;
+        })->unique()->values()->all();
 
         if (auth()->user()->roles->first()->name == 'siswa') {
             $pendaftaran = Pendaftaran::where('user_id', auth()->id())->orderBy('created_at', 'desc')->first();
@@ -37,16 +41,13 @@ class Dashboard extends Component
                 session()->flash('status', 'Anda belum lolos verifikasi');
             }
         } else {
-            if ($tahun) {
-                $pendaftar = Pendaftaran::with('user', 'kelas')->whereYear('created_at', $tahun)->get();
-                $this->tahunSelected = $tahun;
+            if ($tahunFilter) {
+                $pendaftar = Pendaftaran::with('user', 'kelas')->whereYear('created_at', $tahunFilter)->get();
+                $this->tahunSelected = $tahunFilter;
             } else {
-                $pendaftar = Pendaftaran::with('user', 'kelas')->whereYear('created_at', $tahun)->get();
+                $pendaftar = Pendaftaran::with('user', 'kelas')->whereYear('created_at', $this->tahun[0])->get();
+                $this->tahunSelected = $this->tahun[0];
             }
-
-            $this->tahun = Pendaftaran::with('user', 'kelas')->get()->pluck('created_at')->map(function ($date) {
-                return Carbon::parse($date)->year;
-            })->unique()->values()->all();
 
             $this->executive = $pendaftar->where('kelas_id', 1)->where('status_daftar_ulang', 1)->count();
             $this->reguler_ac = $pendaftar->where('kelas_id', 2)->where('status_daftar_ulang', 1)->count();
