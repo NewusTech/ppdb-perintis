@@ -12,7 +12,7 @@
                 <label for="username">Username</label>
                 <input id="username" type="text"
                     class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" name="username" required
-                    autocomplete="username" placeholder="Mauskan username" value="{{ old('username') }}">
+                    autocomplete="username" placeholder="Masukkan username" value="{{ old('username') }}">
                 <x-jet-input-error for="username"></x-jet-input-error>
             </div>
 
