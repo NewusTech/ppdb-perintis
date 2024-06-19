@@ -33,6 +33,13 @@ class PendaftaranAwalTable extends DataTableComponent
                     2 => 'Reguler AC',
                     3 => 'Reguler Non Ac',
                 ]),
+
+            'tahun_masuk' => Filter::make('Tahun')->select([
+            '' => 'Semua',
+            '2024' => '2024',
+            '2023' => '2023',
+            '2022' => '2022',
+            ]),
         ];
     }
 
@@ -64,7 +71,8 @@ class PendaftaranAwalTable extends DataTableComponent
             ->join('users', 'users.id', '=', 'pendaftaran.user_id')
             ->join('kelas', 'kelas.id', '=', 'pendaftaran.kelas_id')
             ->select('pendaftaran.*', 'users.name', 'users.username', 'kelas.jenis_kelas')
-            ->when($this->getFilter('kelas_id'), fn ($query, $kelas_id) => $query->whereIn('kelas_id', $kelas_id));
+            ->when($this->getFilter('kelas_id'), fn ($query, $kelas_id) => $query->whereIn('kelas_id', $kelas_id))
+            ->when($this->getFilter('tahun_masuk'), fn ($query, $created_at) => $query->whereYear('pendaftaran.created_at', $created_at));
     }
 
     public $pendaftaran_id = '', $nama_lengkap = '', $no_pendaftaran = '', $username = '', $token = '', $password = '', $kelas = '', $nisn = '';

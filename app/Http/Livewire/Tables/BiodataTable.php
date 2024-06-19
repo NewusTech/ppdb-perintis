@@ -6,6 +6,7 @@ use App\Models\Pendaftaran;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
+use Rappasoft\LaravelLivewireTables\Views\Filter;
 
 class BiodataTable extends DataTableComponent
 {
@@ -13,6 +14,18 @@ class BiodataTable extends DataTableComponent
     public string $defaultSortDirection = 'desc';
     public $kelas_id;
     public $keterangan;
+
+    public function filters(): array
+    {
+        return [
+            'tahun_masuk' => Filter::make('Tahun')->select([
+                '' => 'Semua',
+                '2024' => '2024',
+                '2023' => '2023',
+                '2022' => '2022',
+            ]),
+        ];
+    }
 
 
     public function columns(): array
@@ -86,14 +99,16 @@ class BiodataTable extends DataTableComponent
                 ->select('pendaftaran.*', 'users.name', 'users.username', 'kelas.jenis_kelas')
                 ->where('user_id', auth()->id())
                 ->where('kelas.id', $this->kelas_id)
-                ->where('status_daftar_ulang', true);
+                ->where('status_daftar_ulang', true)
+                ->when($this->getFilter('tahun_masuk'), fn ($query, $created_at) => $query->whereYear('pendaftaran.created_at', $created_at));
         }
         return Pendaftaran::query()
             ->join('users', 'users.id', '=', 'pendaftaran.user_id')
             ->join('kelas', 'kelas.id', '=', 'pendaftaran.kelas_id')
             ->select('pendaftaran.*', 'users.name', 'users.username', 'kelas.jenis_kelas')
             ->where('kelas.id', $this->kelas_id)
-            ->where('status_daftar_ulang', true);
+            ->where('status_daftar_ulang', true)
+            ->when($this->getFilter('tahun_masuk'), fn ($query, $created_at) => $query->whereYear('pendaftaran.created_at', $created_at));
     }
 
     public function rowView(): string
