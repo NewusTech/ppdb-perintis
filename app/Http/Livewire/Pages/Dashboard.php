@@ -20,7 +20,7 @@ class Dashboard extends Component
         ]);
         $tahunFilter = $request->tahun;
 
-        $this->tahun = Pendaftaran::with('user', 'kelas')->where('status_daftar_ulang', 1)->orderByDesc('created_at')->get()->pluck('created_at')->map(function ($date) {
+        $this->tahun = Pendaftaran::with('user', 'kelas')->orderByDesc('created_at')->get()->pluck('created_at')->map(function ($date) {
             return Carbon::parse($date)->year;
         })->unique()->values()->all();
 
@@ -53,12 +53,14 @@ class Dashboard extends Component
             $this->reguler_ac = $pendaftar->where('kelas_id', 2)->where('status_daftar_ulang', 1)->count();
             $this->non_ac = $pendaftar->where('kelas_id', 3)->where('status_daftar_ulang', 1)->count();
 
-            $this->executive_ipa = $pendaftar->where('kelas_id', 1)->where('jurusan', 'IPA')->count();
-            $this->executive_ips = $pendaftar->where('kelas_id', 1)->where('jurusan', 'IPS')->count();
-            $this->reguler_ac_ipa = $pendaftar->where('kelas_id', 2)->where('jurusan', 'IPA')->count();
-            $this->reguler_ac_ips = $pendaftar->where('kelas_id', 2)->where('jurusan', 'IPS')->count();
-            $this->non_ac_ipa = $pendaftar->where('kelas_id', 3)->where('jurusan', 'IPA')->count();
-            $this->non_ac_ips = $pendaftar->where('kelas_id', 3)->where('jurusan', 'IPS')->count();
+            $this->executive_ipa = $pendaftar->where('kelas_id', 1)->where('status_daftar_ulang', 1)->where('jurusan', 'IPA')->count();
+            $this->executive_ips = $pendaftar->where('kelas_id', 1)->where('status_daftar_ulang', 1)->where('jurusan', 'IPS')->count();
+            $this->reguler_ac_ipa = $pendaftar->where('kelas_id', 2)->where('status_daftar_ulang', 1)->where('jurusan', 'IPA')->count();
+            $this->reguler_ac_ips = $pendaftar->where('kelas_id', 2)->where('status_daftar_ulang', 1)->where('jurusan', 'IPS')->count();
+            $this->non_ac_ipa = $pendaftar->where('kelas_id', 3)->where('status_daftar_ulang', 1)->where('jurusan', 'IPA')->count();
+            $this->non_ac_ips = $pendaftar->where('kelas_id', 3)->where('status_daftar_ulang', 1)->where('jurusan', 'IPS')->count();
+
+            // dd($pendaftar);
         }
     }
 
