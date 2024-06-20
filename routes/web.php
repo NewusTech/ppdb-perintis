@@ -31,7 +31,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     // route pendaftaran awal
     Route::group(['middleware' => 'role:admin pendaftaran awal|admin wawancara|admin daftar ulang|admin verifikasi|super admin'], function () {
-        Route::get('/pendaftaran-awal', PendaftaranAwal::class);
+        Route::get('/pendaftaran-awal', PendaftaranAwal::class)->name('pendaftaran-awal');
         Route::get('/cetak-bukti-pendaftaran-awal-dan-informasi-daftar-ulang/{id}', BerkasController::class . '@cetakBuktiPendaftaranAwal');
     });
 
@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::group(['middleware' => 'role:siswa|admin wawancara|admin daftar ulang|admin verifikasi|super admin'], function () {
         Route::get('/wawancara', Wawancara::class);
         Route::get('/wawancara/{id}', FormulirWawancara::class);
+        Route::get('/cetak-surat-pernyataan-siswa-baru/{id}', BerkasController::class . '@cetakSuratPernyataanSiswaBaru');
         Route::get('/cetak-surat-pernyataan-siswa-baru/{id}', BerkasController::class . '@cetakSuratPernyataanSiswaBaru');
         Route::get('/download-surat-pernyataan-siswa-baru/{id}', BerkasController::class . '@downloadSuratPernyataanSiswaBaru');
     });
