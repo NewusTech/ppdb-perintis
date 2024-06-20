@@ -1,7 +1,7 @@
 @slot('title', 'Pendaftaran Awal')
 
 @push('extraCSS')
-    {{-- empty --}}
+{{-- empty --}}
 @endpush
 
 @slot('titleBreadcrumb', 'PPDB')
@@ -45,8 +45,25 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="mb-4 card-title">Tabel Pendaftaran Awal Siswa</h4>
-                    @livewire('tables.pendaftaran-awal-table')
+                    <div class="d-flex justify-content-between">
+                        <h4 class="mb-4 card-title">Tabel Pendaftaran Awal Siswa</h4>
+                        <div class="col-md-4">
+                            <div class="row align-items-center justify-content-end">
+                                <div class="mr-2">Tahun: </div>
+                                <div class="mb-2">
+                                    <form method="GET" action="{{ route('pendaftaran-awal') }}">
+                                        <select class="form-control" name="tahun" onchange="this.form.submit()">
+                                            <option value="">Semua</option>
+                                            @for($year = date('Y'); $year >= 2020; $year--)
+                                            <option value="{{ $year }}" {{ request('tahun') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                                            @endfor
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @livewire('tables.pendaftaran-awal-table', ['tahun' => request('tahun')])
                 </div>
             </div>
         </div>
