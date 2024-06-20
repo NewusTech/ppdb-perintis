@@ -16,6 +16,8 @@ class PendaftaranAwalTable extends DataTableComponent
     public string $defaultSortColumn = 'created_at';
     public string $defaultSortDirection = 'desc';
 
+    public $tahun;
+
     protected $listeners = [
         'tabelPendaftaranAwal' => '$refresh',
     ];
@@ -24,6 +26,10 @@ class PendaftaranAwalTable extends DataTableComponent
         'kelas_id' => 'Kelas',
     ];
 
+    public function mount($tahun =  null)
+    {
+        $this->tahun = $tahun;
+    }
     public function filters(): array
     {
         return [
@@ -35,10 +41,10 @@ class PendaftaranAwalTable extends DataTableComponent
                 ]),
 
             'tahun_masuk' => Filter::make('Tahun')->select([
-            '' => 'Semua',
-            '2024' => '2024',
-            '2023' => '2023',
-            '2022' => '2022',
+                '' => 'Semua',
+                '2024' => '2024',
+                '2023' => '2023',
+                '2022' => '2022',
             ]),
         ];
     }
@@ -67,12 +73,18 @@ class PendaftaranAwalTable extends DataTableComponent
 
     public function query(): Builder
     {
-        return Pendaftaran::query()
+        $query = Pendaftaran::query()
             ->join('users', 'users.id', '=', 'pendaftaran.user_id')
             ->join('kelas', 'kelas.id', '=', 'pendaftaran.kelas_id')
             ->select('pendaftaran.*', 'users.name', 'users.username', 'kelas.jenis_kelas')
             ->when($this->getFilter('kelas_id'), fn ($query, $kelas_id) => $query->whereIn('kelas_id', $kelas_id))
             ->when($this->getFilter('tahun_masuk'), fn ($query, $created_at) => $query->whereYear('pendaftaran.created_at', $created_at));
+
+        if ($this->tahun) {
+            $query->whereYear('pendaftaran.created_at', $this->tahun);
+        }
+
+        return $query;
     }
 
     public $pendaftaran_id = '', $nama_lengkap = '', $no_pendaftaran = '', $username = '', $token = '', $password = '', $kelas = '', $nisn = '';
